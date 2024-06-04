@@ -34,3 +34,11 @@ export const generatePublicQR = {
         entity_instance: Joi.string().required(),
     },
 };
+
+export const getLatestDiagnosis = {
+    
+}
+
+export const getGrowthMonitoring = {
+    
+}

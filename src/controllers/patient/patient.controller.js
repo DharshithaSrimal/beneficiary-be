@@ -1,4 +1,5 @@
 import { Patient } from '../../models';
+import { Appointment } from '../../models';
 import { successResponse, errorResponse, uniqueId } from '../../helpers';
 import axios from 'axios';
 import { getDataElements, getEvents, getPatientDetails, getPatientDetailsByEpi, getPatientVaccineList, getTravellers, getVaccines, OPTIONALS, parsePatient, PREGNANCY, TRAVELLERS } from '../../config/constants';
@@ -274,3 +275,35 @@ const genQR = ({ epi, entity }) => {
 export const generatePublicQR = async (req, res) => {
   return successResponse(req, res, { qr: genQR({ epi: req.body.epi, entity: req.body.entity_instance }) });
 }
+
+
+// Primary Health Care (PHC) Registry
+
+const getLatestDiagnosis = async (req, res) => {
+
+}
+
+export const getGrowthMonitoringData = async (req, res) => {
+  const events = await getGrowthMonitoringEvents(req);
+}
+
+export const getGrowthMonitoringEvents = async (req) => {
+  try {
+      const fetched = await getPatientDetailsByEpi({ epi: req.body.epi });
+      const tei = fetched.entity_instance;
+      const url = `${process.env.BASE_API}events.json?fields=eventDate,dataValues[dataElement,value]&program=${process.env.PROGRAM}&ouMode=ACCESSIBLE&trackedEntityInstance=${tei}&programStage=${process.env.EIR_PROGRAM_STAGE}`;
+      const out = await axios.get(url, {
+          auth: {
+              username: process.env.DHIS_USER,
+              password: process.env.DHIS_PWD
+          }
+      });
+
+      return out.data;
+  } catch (e) {
+      console.log("ERR", e);
+      return [];
+  }
+}
+
+// End of Primary Health Care (PHC) Registry

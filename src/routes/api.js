@@ -15,6 +15,9 @@ const router = express.Router();
 //= ===============================
 // API routes
 //= ===============================
+
+// Electronic Immunization Registry (EIR) Endpoints
+
 router.get('/me', userController.profile);
 router.post(
   '/changePassword',
@@ -87,5 +90,22 @@ router.post(
   validate(patientValidator.generatePublicQR),
   patientController.generatePublicQR,
 );
+
+// End of Electronic Immunization Registry (EIR) Endpoints
+router.get(
+  '/getGrowthMonitoring',
+  validate(patientValidator.getGrowthMonitoring),
+  patientController.getGrowthMonitoringData,
+);
+
+// Primary Health Care (PHC) Registry Endpoints
+
+// router.get(
+//   '/getDiagnosis',
+//   validate(patientValidator.getLatestDiagnosis),
+//   patientController.getLatestDiagnosis,
+// );
+
+// End of Primary Health Care (PHC) Registry Endpoints
 
 module.exports = router;
