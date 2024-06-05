@@ -285,6 +285,7 @@ const getLatestDiagnosis = async (req, res) => {
 
 export const getGrowthMonitoringData = async (req, res) => {
   const events = await getGrowthMonitoringEvents(req);
+  res.json(events)
 }
 
 export const getGrowthMonitoringEvents = async (req) => {
