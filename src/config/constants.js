@@ -7,9 +7,34 @@ export const TRAVELLERS = process.env.TRAVELLERS;
 export const OPTIONALS = process.env.OPTIONALS;
 export const PREGNANCY = process.env.PREGNANCY;
 
+// Electronic Immunization Registry (EIR) API Implementation
+
 export const getPatientDetails = async ({ beneficiary, foolhuma }) => {
     try {
         const url = `${BASE_API}trackedEntityInstances.json?program=${process.env.PROGRAM}&fields=attributes,enrollments&ouMode=ACCESSIBLE&filter=${process.env.PATIENT_PARAM_FOOLHUMA}:eq:${beneficiary}`;
+
+        const out = await axios.get(url, {
+            auth: {
+                username: process.env.DHIS_USER,
+                password: process.env.DHIS_PWD
+            }
+        });
+
+        if (out.data.trackedEntityInstances && out.data.trackedEntityInstances.length > 0) {
+            const attr = out.data.trackedEntityInstances[0].attributes.map((elem) => { return { key: elem.attribute, value: elem.value } });
+            attr.push({ key: 'entityInstance', value: out.data.trackedEntityInstances[0].enrollments ? out.data.trackedEntityInstances[0].enrollments[0].trackedEntityInstance : 0 });
+            return attr;
+        }
+        return [];
+    } catch (e) {
+        console.log("ERR", e);
+        return [];
+    }
+}
+
+export const getPatientDetailsByNid = async ({ nic }) => {
+    try {
+        const url = `${BASE_API}trackedEntityInstances.json?program=${process.env.PROGRAM}&fields=attributes,enrollments&ouMode=ACCESSIBLE&filter=${process.env.PATIENT_PARAM_NATIONALID}:eq:${nic}`;
 
         const out = await axios.get(url, {
             auth: {
@@ -207,3 +232,9 @@ export function parsePatient(arr) {
         other: arr
     }
 }
+
+// End of Electronic Immunization Registry (EIR) API Implementation
+
+// Primary Health Care (PHC) Registry API Implementation
+
+// End of Primary Health Care (PHC) Registry API Implementation
