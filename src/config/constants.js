@@ -32,28 +32,28 @@ export const getPatientDetails = async ({ beneficiary, foolhuma }) => {
     }
 }
 
-export const getPatientDetailsByNid = async ({ nic }) => {
-    try {
-        const url = `${BASE_API}trackedEntityInstances.json?program=${process.env.PROGRAM}&fields=attributes,enrollments&ouMode=ACCESSIBLE&filter=${process.env.PATIENT_PARAM_NATIONALID}:eq:${nic}`;
+// export const getPatientDetailsByNid = async ({ nic }) => {
+//     try {
+//         const url = `${BASE_API}trackedEntityInstances.json?program=${process.env.PROGRAM}&fields=attributes,enrollments&ouMode=ACCESSIBLE&filter=${process.env.PATIENT_PARAM_NATIONALID}:eq:${nic}`;
 
-        const out = await axios.get(url, {
-            auth: {
-                username: process.env.DHIS_USER,
-                password: process.env.DHIS_PWD
-            }
-        });
+//         const out = await axios.get(url, {
+//             auth: {
+//                 username: process.env.DHIS_USER,
+//                 password: process.env.DHIS_PWD
+//             }
+//         });
 
-        if (out.data.trackedEntityInstances && out.data.trackedEntityInstances.length > 0) {
-            const attr = out.data.trackedEntityInstances[0].attributes.map((elem) => { return { key: elem.attribute, value: elem.value } });
-            attr.push({ key: 'entityInstance', value: out.data.trackedEntityInstances[0].enrollments ? out.data.trackedEntityInstances[0].enrollments[0].trackedEntityInstance : 0 });
-            return attr;
-        }
-        return [];
-    } catch (e) {
-        console.log("ERR", e);
-        return [];
-    }
-}
+//         if (out.data.trackedEntityInstances && out.data.trackedEntityInstances.length > 0) {
+//             const attr = out.data.trackedEntityInstances[0].attributes.map((elem) => { return { key: elem.attribute, value: elem.value } });
+//             attr.push({ key: 'entityInstance', value: out.data.trackedEntityInstances[0].enrollments ? out.data.trackedEntityInstances[0].enrollments[0].trackedEntityInstance : 0 });
+//             return attr;
+//         }
+//         return [];
+//     } catch (e) {
+//         console.log("ERR", e);
+//         return [];
+//     }
+// }
 
 export const getPatientDetailsByEpi = async ({ epi }) => {
     try {
