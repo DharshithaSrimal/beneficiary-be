@@ -1,11 +1,11 @@
 import { Enroll } from '../../models';
 import { successResponse, errorResponse, uniqueId } from '../../helpers';
-import { getEvents, getPatientDetails, getPatientDetailsByEip, getPatientDetailsByEpi, getTravellers, getVaccines, OPTIONALS, parsePatient, PREGNANCY, TRAVELLERS } from '../../config/constants';
+import { getEvents, getPatientDetails, getPatientDetailsByNid, getPatientDetailsByEip, getPatientDetailsByEpi, getTravellers, getVaccines, OPTIONALS, parsePatient, PREGNANCY, TRAVELLERS } from '../../config/constants';
 
 export const enrollChild = async (req, res) => {
   try {
     const { userId } = req.user;
-    const output = await getPatientDetails({ beneficiary: req.body.beneficiary });
+    const output = await getPatientDetailsByNid({ nic: req.body.beneficiary });
     if (output && output.length > 0) {
       var code = Math.floor(100000 + Math.random() * 900000);
       var attr = output;
