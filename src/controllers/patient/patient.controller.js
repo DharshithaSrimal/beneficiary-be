@@ -183,6 +183,32 @@ export const getPatientProfile = async (req, res) => {
           id: process.env.TDV_D1
         },
       ];
+      const milestones = [
+        {
+          name: "G&D|12m Cognitive - 1. Puts something in a container",
+          id: process.env.M_D1
+        },
+        {
+          name: "G&D|12m Cognitive - 2. Looks for things he sees you hide",
+          id: process.env.M_D2
+        },
+        {
+          name: "G&D|12m Comminication - 1. Waves bye-bye",
+          id: process.env.M_D3
+        },
+        {
+          name: "G&D|12m Comminication - 2. Calls a parent by special name eg: Mom, Dad",
+          id: process.env.M_D4
+        },
+        {
+          name: "G&D|12m Comminication - 3. Understands no",
+          id: process.env.M_D5
+        },
+        {
+          name: "G&D|12m Physical - 1. Pulls up to stand",
+          id: process.env.M_D6
+        },
+      ];
       const optionals = await getVaccines({ group_id: OPTIONALS });
       const pregnancy = await getVaccines({ group_id: PREGNANCY });
       const travellers = await getTravellers({ group_id: TRAVELLERS });
@@ -276,9 +302,6 @@ export const generatePublicQR = async (req, res) => {
   return successResponse(req, res, { qr: genQR({ epi: req.body.epi, entity: req.body.entity_instance }) });
 }
 
-
-// Primary Health Care (PHC) Registry
-
 const getLatestDiagnosis = async (req, res) => {
 
 }
@@ -293,6 +316,34 @@ export const getGrowthMonitoringEvents = async (req) => {
       const fetched = await getPatientDetailsByEpi({ epi: req.body.epi });
       const tei = fetched.entity_instance;
       const url = `${process.env.BASE_API}events.json?fields=eventDate,dataValues[dataElement,value]&program=${process.env.PROGRAM}&ouMode=ACCESSIBLE&trackedEntityInstance=${tei}&programStage=${process.env.EIR_PROGRAM_STAGE}`;
+      const out = await axios.get(url, {
+          auth: {
+              username: process.env.DHIS_USER,
+              password: process.env.DHIS_PWD
+          }
+      });
+
+      return out.data;
+  } catch (e) {
+      console.log("ERR", e);
+      return [];
+  }
+}
+
+// Primary Health Care (PHC) Registry
+
+export const getPhcData = async (req, res) => {
+  const events = await getPhcEvents(req);
+  res.json(events)
+}
+
+export const getPhcEvents = async (req) => {
+  try {
+      // const fetched = await getPatientDetailsByEpi({ epi: req.body.epi });
+      
+      //const tei = fetched.entity_instance;
+      const tei = 'Yflk9uRmyEU';
+      const url = `${process.env.BASE_API}events.json?fields=eventDate,dataValues[dataElement,value]&program=${process.env.PHC_PROGRAM}&ouMode=ACCESSIBLE&trackedEntityInstance=${tei}`;
       const out = await axios.get(url, {
           auth: {
               username: process.env.DHIS_USER,

@@ -42,3 +42,7 @@ export const getLatestDiagnosis = {
 export const getGrowthMonitoring = {
     
 }
+
+export const getPhc = {
+    
+}

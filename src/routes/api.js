@@ -91,7 +91,6 @@ router.post(
   patientController.generatePublicQR,
 );
 
-// End of Electronic Immunization Registry (EIR) Endpoints
 router.get(
   '/getGrowthMonitoring',
   validate(patientValidator.getGrowthMonitoring),
@@ -100,11 +99,11 @@ router.get(
 
 // Primary Health Care (PHC) Registry Endpoints
 
-// router.get(
-//   '/getDiagnosis',
-//   validate(patientValidator.getLatestDiagnosis),
-//   patientController.getLatestDiagnosis,
-// );
+router.get(
+  '/getPhcData',
+  validate(patientValidator.getGrowthMonitoring),
+  patientController.getPhcData,
+);
 
 // End of Primary Health Care (PHC) Registry Endpoints
 
