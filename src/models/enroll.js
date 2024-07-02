@@ -3,6 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   const Enroll = sequelize.define('Enroll', {
     userId: DataTypes.INTEGER,
     epi: DataTypes.STRING,
+    phcId: DataTypes.STRING,
     nic: DataTypes.STRING,
     foolhuma: DataTypes.STRING,
     dob: DataTypes.STRING,

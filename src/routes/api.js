@@ -99,7 +99,7 @@ router.get(
 
 // Primary Health Care (PHC) Registry Endpoints
 
-router.get(
+router.post(
   '/getPhcData',
   validate(patientValidator.getGrowthMonitoring),
   patientController.getPhcData,

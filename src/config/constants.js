@@ -35,17 +35,31 @@ export const getPatientDetails = async ({ beneficiary, foolhuma }) => {
 export const getPatientDetailsByNid = async ({ nic, foolhuma }) => {
     try {
         const url = `${BASE_API}trackedEntityInstances.json?program=${process.env.PROGRAM}&fields=attributes,enrollments&ouMode=ACCESSIBLE&filter=${process.env.PATIENT_PARAM_NATIONALID}:eq:${nic}`;
+        const phcUrl = `${BASE_API}trackedEntityInstances.json?program=${process.env.PHC_PROGRAM}&fields=attributes,enrollments&ouMode=ACCESSIBLE&filter=${process.env.PATIENT_PARAM_NATIONALID}:eq:${nic}`;
 
-        const out = await axios.get(url, {
-            auth: {
-                username: process.env.DHIS_USER,
-                password: process.env.DHIS_PWD
-            }
-        });
+        // Perform both requests concurrently
+        const [out, phcOut] = await Promise.all([
+            axios.get(url, {
+                auth: {
+                    username: process.env.DHIS_USER,
+                    password: process.env.DHIS_PWD
+                }
+            }),
+            axios.get(phcUrl, {
+                auth: {
+                    username: process.env.DHIS_USER,
+                    password: process.env.DHIS_PWD
+                }
+            })
+        ]);
 
         if (out.data.trackedEntityInstances && out.data.trackedEntityInstances.length > 0) {
             const attr = out.data.trackedEntityInstances[0].attributes.map((elem) => { return { key: elem.attribute, value: elem.value } });
             attr.push({ key: 'entityInstance', value: out.data.trackedEntityInstances[0].enrollments ? out.data.trackedEntityInstances[0].enrollments[0].trackedEntityInstance : 0 });
+            return attr;
+        } else if (phcOut.data.trackedEntityInstances && phcOut.data.trackedEntityInstances.length > 0) {
+            const attr = phcOut.data.trackedEntityInstances[0].attributes.map((elem) => { return { key: elem.attribute, value: elem.value } });
+            attr.push({ key: 'entityInstance', value: phcOut.data.trackedEntityInstances[0].enrollments ? phcOut.data.trackedEntityInstances[0].enrollments[0].trackedEntityInstance : 0 });
             return attr;
         }
         return [];
@@ -58,6 +72,28 @@ export const getPatientDetailsByNid = async ({ nic, foolhuma }) => {
 export const getPatientDetailsByEpi = async ({ epi }) => {
     try {
         const url = `${BASE_API}trackedEntityInstances.json?program=${process.env.PROGRAM}&fields=attributes,enrollments&ouMode=ACCESSIBLE&filter=${process.env.PATIENT_PARAM_EPI}:eq:${epi}`;
+        const out = await axios.get(url, {
+            auth: {
+                username: process.env.DHIS_USER,
+                password: process.env.DHIS_PWD
+            }
+        });
+
+        if (out.data.trackedEntityInstances && out.data.trackedEntityInstances.length > 0) {
+            const attr = out.data.trackedEntityInstances[0].attributes.map((elem) => { return { key: elem.attribute, value: elem.value } });
+            attr.push({ key: 'entityInstance', value: out.data.trackedEntityInstances[0].enrollments ? out.data.trackedEntityInstances[0].enrollments[0].trackedEntityInstance : 0 });
+            return parsePatient(attr);
+        }
+        return [];
+    } catch (e) {
+        console.log("ERR", e);
+        return [];
+    }
+}
+
+export const getPatientDetailsByPhcId = async ({ phcId }) => {
+    try {
+        const url = `${BASE_API}trackedEntityInstances.json?program=${process.env.PHC_PROGRAM}&fields=attributes,enrollments&ouMode=ACCESSIBLE&filter=${process.env.PATIENT_PARAM_PHCID}:eq:${phcId}`;
         const out = await axios.get(url, {
             auth: {
                 username: process.env.DHIS_USER,
@@ -213,6 +249,7 @@ export function parsePatient(arr) {
     return {
         id: getParam(process.env.PATIENT_PARAM_ID),
         epi: getParam(process.env.PATIENT_PARAM_EPI),
+        phcId: getParam(process.env.PATIENT_PARAM_PHCID),
         name: getParam(process.env.PATIENT_PARAM_NAME),
         dob: getParam(process.env.PATIENT_PARAM_DOB),
         sex: getParam(process.env.PATIENT_PARAM_SEX),

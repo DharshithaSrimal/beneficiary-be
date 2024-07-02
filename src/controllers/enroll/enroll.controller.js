@@ -1,6 +1,6 @@
 import { Enroll } from '../../models';
 import { successResponse, errorResponse, uniqueId } from '../../helpers';
-import { getEvents, getPatientDetails, getPatientDetailsByNid, getPatientDetailsByEip, getPatientDetailsByEpi, getTravellers, getVaccines, OPTIONALS, parsePatient, PREGNANCY, TRAVELLERS } from '../../config/constants';
+import { getEvents, getPatientDetails, getPatientDetailsByNid, getPatientDetailsByEip, getPatientDetailsByEpi, getTravellers, getVaccines, OPTIONALS, parsePatient, PREGNANCY, TRAVELLERS, getPatientDetailsByPhcId } from '../../config/constants';
 
 export const enrollChild = async (req, res) => {
   try {
@@ -10,12 +10,16 @@ export const enrollChild = async (req, res) => {
       var code = Math.floor(100000 + Math.random() * 900000);
       var attr = output;
       const incoming = parsePatient(output);
-      const child = await Enroll.findOne({
-        where: {
-          userId,
-          epi: incoming.epi
-        }
-      });
+      const phcId = attr.find(attr => attr.key === 'XSUmDYb4I1u');
+      var child = null;
+      if (!phcId) {
+          child = await Enroll.findOne({
+          where: {
+            userId,
+            epi: incoming.epi
+          }
+        });
+      };
       if (!child || (child.otp !== null)) {
         if (incoming.mother_contact !== req.body.contact) {
           return errorResponse(req, res, { message: 'Beneficiary ID does not match with contact number. Please contact the health centre.', output });
@@ -29,6 +33,7 @@ export const enrollChild = async (req, res) => {
           userId,
           otp: code,
           epi: incoming.epi,
+          phcId: incoming.phcId,
           nic: incoming.nic,
           foolhuma: incoming.foolhuma,
           name: incoming.name,
@@ -87,14 +92,19 @@ export const getEnrollmentDetails = async (req, res) => {
     const child = await Enroll.findOne({
       where: {
         userId,
-        epi: req.body.epi
+        epi: req.body.epi,
+        phcId: req.body.phcId
       }
     });
     if (!child) {
       return errorResponse(req, res, { message: "Child not enrolled" });
     }
-    const fetched = await getPatientDetailsByEpi({ epi: req.body.epi });
-
+    var fetched = null;
+    if(req.body.epi){
+      fetched = await getPatientDetailsByEpi({ epi: req.body.epi });
+    }else if(req.body.phcId){
+      fetched = await getPatientDetailsByPhcId({ phcId: req.body.phcId });
+    }
     return successResponse(req, res, { child: fetched });
   } catch (error) {
     return errorResponse(req, res, error.message);
@@ -208,6 +218,36 @@ export const getEventLog = async (req, res) => {
       {
         name: "Dose 6",
         id: process.env.TDV_D1
+      },
+    ];
+    const milestones = [
+      {
+        name: "Dose 1",
+        id: process.env.M_D1
+      },
+      {
+        name: "Dose 2",
+        id: process.env.M_D2
+      },
+      {
+        name: "Dose 1",
+        id: process.env.M_D3
+      },
+      {
+        name: "Dose 2",
+        id: process.env.M_D4
+      },
+      {
+        name: "Dose 3",
+        id: process.env.M_D5
+      },
+      {
+        name: "Dose 4",
+        id: process.env.M_D6
+      },
+      {
+        name: "Dose 5",
+        id: process.env.M_D7
       },
     ];
     const optionals = await getVaccines({ group_id: OPTIONALS });

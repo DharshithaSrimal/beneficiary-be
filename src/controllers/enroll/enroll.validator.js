@@ -19,7 +19,7 @@ export const getEnrollments = {
 
 export const getEnrollmentDetails = {
   body: {
-    epi: Joi.string().required(),
+    //epi: Joi.string().required(),
   },
 };
 

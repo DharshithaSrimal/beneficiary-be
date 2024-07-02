@@ -2,7 +2,7 @@ import { Patient } from '../../models';
 import { Appointment } from '../../models';
 import { successResponse, errorResponse, uniqueId } from '../../helpers';
 import axios from 'axios';
-import { getDataElements, getEvents, getPatientDetails, getPatientDetailsByEpi, getPatientVaccineList, getTravellers, getVaccines, OPTIONALS, parsePatient, PREGNANCY, TRAVELLERS } from '../../config/constants';
+import { getDataElements, getEvents, getPatientDetails, getPatientDetailsByEpi, getPatientDetailsByPhcId, getPatientVaccineList, getTravellers, getVaccines, OPTIONALS, parsePatient, PREGNANCY, TRAVELLERS } from '../../config/constants';
 
 export const getPatientByUserID = async (userId) => {
   const patients = await Patient.findAll({
@@ -339,10 +339,9 @@ export const getPhcData = async (req, res) => {
 
 export const getPhcEvents = async (req) => {
   try {
-      // const fetched = await getPatientDetailsByEpi({ epi: req.body.epi });
+      const fetched = await getPatientDetailsByPhcId({ phcId: req.body.phcId });
       
-      //const tei = fetched.entity_instance;
-      const tei = 'Yflk9uRmyEU';
+      const tei = fetched.entity_instance;
       const url = `${process.env.BASE_API}events.json?fields=eventDate,dataValues[dataElement,value]&program=${process.env.PHC_PROGRAM}&ouMode=ACCESSIBLE&trackedEntityInstance=${tei}`;
       const out = await axios.get(url, {
           auth: {
