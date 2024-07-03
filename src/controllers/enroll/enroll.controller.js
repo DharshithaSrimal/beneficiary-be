@@ -12,14 +12,14 @@ export const enrollChild = async (req, res) => {
       const incoming = parsePatient(output);
       const phcId = attr.find(attr => attr.key === 'XSUmDYb4I1u');
       var child = null;
-      if (!phcId) {
-          child = await Enroll.findOne({
-          where: {
-            userId,
-            epi: incoming.epi
-          }
-        });
-      };
+      child = await Enroll.findOne({
+        where: {
+          userId,
+          epi: incoming.epi,
+          phcId: incoming.phcId
+        }
+      });
+
       if (!child || (child.otp !== null)) {
         if (incoming.mother_contact !== req.body.contact) {
           return errorResponse(req, res, { message: 'Beneficiary ID does not match with contact number. Please contact the health centre.', output });

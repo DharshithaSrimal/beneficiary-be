@@ -261,6 +261,7 @@ export function parsePatient(arr) {
         mother_contact: getParam(process.env.PATIENT_PARAM_MOTHER_CONTACT),
         mother_nic: getParam(process.env.PATIENT_PARAM_MOTHER_NIC),
         residential_island: getParam(process.env.PATIENT_PARAM_RESIDENTIAL_ISLAND),
+        residential_address: getParam(process.env.PATIENT_PARAM_RESIDENTIAL_ADDRESS),
         residential_no: getParam(process.env.PATIENT_PARAM_RESIDENTIAL_NO),
         caregiver: getParam(process.env.PATIENT_PARAM_CAREGIVER),
         caregiver_id: getParam(process.env.PATIENT_PARAM_CAREGIVER_ID),
