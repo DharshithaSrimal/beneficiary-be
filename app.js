@@ -23,9 +23,9 @@ app.use(
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use('/pub', publicRoutes);
-app.use('/api', apiMiddleware, apiRoutes);
-app.use('/api/admin', apiMiddleware, adminMiddleware, adminRoutes);
+app.use('/pub', cors(), publicRoutes);
+app.use('/api', cors(), apiMiddleware, apiRoutes);
+app.use('/api/admin', cors(), apiMiddleware, adminMiddleware, adminRoutes);
 app.use(errorHandler);
 
 module.exports = app;
