@@ -91,7 +91,7 @@ router.post(
   patientController.generatePublicQR,
 );
 
-router.get(
+router.post(
   '/getGrowthMonitoring',
   validate(patientValidator.getGrowthMonitoring),
   patientController.getGrowthMonitoringData,
