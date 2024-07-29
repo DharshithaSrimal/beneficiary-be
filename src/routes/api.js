@@ -97,6 +97,12 @@ router.post(
   patientController.getGrowthMonitoringData,
 );
 
+router.post(
+  '/getDevelopmentMilestones',
+  validate(patientValidator.getDevelopmentMilestones),
+  patientController.getDevelopmentMilestonesData,
+);
+
 // Primary Health Care (PHC) Registry Endpoints
 
 router.post(

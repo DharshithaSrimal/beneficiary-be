@@ -330,6 +330,30 @@ export const getGrowthMonitoringEvents = async (req) => {
   }
 }
 
+export const getDevelopmentMilestonesData = async (req, res) => {
+  const events = await getDevelopmentMilestonesEvents(req);
+  res.json(events)
+}
+
+export const getDevelopmentMilestonesEvents = async (req) => {
+  try {
+      const fetched = await getPatientDetailsByEpi({ epi: req.body.epi });
+      const tei = fetched.entity_instance;
+      const url = `${process.env.BASE_API}events.json?fields=eventDate,dataValues[dataElement,value]&program=${process.env.PROGRAM}&ouMode=ACCESSIBLE&trackedEntityInstance=${tei}&programStage=t2mLXWlXNaL`;
+      const out = await axios.get(url, {
+          auth: {
+              username: process.env.DHIS_USER,
+              password: process.env.DHIS_PWD
+          }
+      });
+
+      return out.data;
+  } catch (e) {
+      console.log("ERR", e);
+      return [];
+  }
+}
+
 // Primary Health Care (PHC) Registry
 
 export const getPhcData = async (req, res) => {

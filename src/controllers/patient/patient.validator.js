@@ -43,6 +43,10 @@ export const getGrowthMonitoring = {
     
 }
 
+export const getDevelopmentMilestones = {
+    
+}
+
 export const getPhc = {
     
 }
