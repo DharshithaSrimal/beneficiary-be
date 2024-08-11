@@ -315,7 +315,7 @@ export const getGrowthMonitoringEvents = async (req) => {
   try {
       const fetched = await getPatientDetailsByEpi({ epi: req.body.epi });
       const tei = fetched.entity_instance;
-      const url = `${process.env.BASE_API}events.json?fields=eventDate,dataValues[dataElement,value]&program=${process.env.PROGRAM}&ouMode=ACCESSIBLE&trackedEntityInstance=${tei}&programStage=${process.env.EIR_PROGRAM_STAGE}`;
+      const url = `${process.env.BASE_API}events.json?status=COMPLETED&fields=eventDate,dataValues[dataElement,value]&program=${process.env.PROGRAM}&ouMode=ACCESSIBLE&trackedEntityInstance=${tei}&programStage=${process.env.EIR_PROGRAM_STAGE}`;
       const out = await axios.get(url, {
           auth: {
               username: process.env.DHIS_USER,
@@ -339,7 +339,7 @@ export const getDevelopmentMilestonesEvents = async (req) => {
   try {
       const fetched = await getPatientDetailsByEpi({ epi: req.body.epi });
       const tei = fetched.entity_instance;
-      const url = `${process.env.BASE_API}events.json?fields=eventDate,dataValues[dataElement,value]&program=${process.env.PROGRAM}&ouMode=ACCESSIBLE&trackedEntityInstance=${tei}&programStage=t2mLXWlXNaL`;
+      const url = `${process.env.BASE_API}events.json?status=COMPLETED&fields=eventDate,dataValues[dataElement,value]&program=${process.env.PROGRAM}&ouMode=ACCESSIBLE&trackedEntityInstance=${tei}&programStage=t2mLXWlXNaL`;
       const out = await axios.get(url, {
           auth: {
               username: process.env.DHIS_USER,
@@ -366,7 +366,7 @@ export const getPhcEvents = async (req) => {
       const fetched = await getPatientDetailsByPhcId({ phcId: req.body.phcId });
       
       const tei = fetched.entity_instance;
-      const url = `${process.env.BASE_API}events.json?fields=eventDate,dataValues[dataElement,value]&program=${process.env.PHC_PROGRAM}&ouMode=ACCESSIBLE&trackedEntityInstance=${tei}`;
+      const url = `${process.env.BASE_API}events.json?status=COMPLETED&fields=eventDate,dataValues[dataElement,value]&program=${process.env.PHC_PROGRAM}&ouMode=ACCESSIBLE&trackedEntityInstance=${tei}`;
       const out = await axios.get(url, {
           auth: {
               username: process.env.DHIS_USER,

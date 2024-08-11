@@ -178,7 +178,7 @@ export const getTravellers = async ({ group_id }) => {
 
 export const getEvents = async (entity_id) => {
     try {
-        const url = `${BASE_API}events.json?fields=eventDate,programStage,dataValues[dataElement,value]&trackedEntityInstance=${entity_id}`;
+        const url = `${BASE_API}events.json?status=COMPLETED&fields=eventDate,programStage,dataValues[dataElement,value]&trackedEntityInstance=${entity_id}`;
         const out = await axios.get(url, {
             auth: {
                 username: process.env.DHIS_USER,
