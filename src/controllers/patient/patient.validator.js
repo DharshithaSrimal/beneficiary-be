@@ -43,6 +43,10 @@ export const getGrowthMonitoring = {
     
 }
 
+export const getVitaminAndDeworming = {
+    
+}
+
 export const getDevelopmentMilestones = {
     
 }

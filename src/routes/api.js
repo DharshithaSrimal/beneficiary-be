@@ -98,6 +98,12 @@ router.post(
 );
 
 router.post(
+  '/getVitaminAndDeworming',
+  validate(patientValidator.getVitaminAndDeworming),
+  patientController.getVitaminAndDewormingData,
+);
+
+router.post(
   '/getDevelopmentMilestones',
   validate(patientValidator.getDevelopmentMilestones),
   patientController.getDevelopmentMilestonesData,
